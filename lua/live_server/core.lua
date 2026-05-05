@@ -53,13 +53,9 @@ function M.start_live_server(port)
         return
     end
 
-    local out = vim.fn.system("live-server --help")
+    vim.fn.system("live-server --help")
     if vim.v.shell_error ~= 0 then
-	    vim.api.nvim_echo({
-		    { "Failed to execute live-server:\n" },
-		    { out },
-		    { "Maybe you didnt download it?" },
-    },true,{})
+	   utils.notify("Failed to execute live-server. Maybe you didn't downloaded it?",vim.log.levels.ERROR)
 	   vim.fn.getchar()
 	   return
     end
