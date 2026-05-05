@@ -53,12 +53,23 @@ function M.start_live_server(port)
         return
     end
 
+    local out = vim.fn.system("live-server --help")
+    if vim.v.shell_error ~= 0 then
+	    vim.api.nvim_echo({
+		    { "Failed to execute live-server:\n" },
+		    { out },
+		    { "Maybe you didnt download it?" },
+    },true,{})
+	   vim.fn.getchar()
+	   return
+    end
+
     local cmd = string.format("live-server --port=%d", port_num)
     local job_id = vim.fn.jobstart(cmd, { detach = true, cwd = project_root })
 
     if job_id > 0 then
         project_state.live_server = { pid = job_id, port = port_num, cwd = project_root }
-        utils.notify("Live Server started for '" .. vim.fn.fnamemodify(project_root, ":t") .. "' on port " .. port_num)
+	 utils.notify("Live Server started for '" .. vim.fn.fnamemodify(project_root, ":t") .. "' on port " .. port_num)
         if config.auto_open_browser then
             vim.defer_fn(function() utils.open_in_browser('live_server') end, 1000)
         end
